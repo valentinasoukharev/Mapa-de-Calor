@@ -26,3 +26,4 @@ peru_d
 ggplot(data = peru_d) +
   geom_sf()
 ```
+<img width="448" height="486" alt="image" src="https://github.com/user-attachments/assets/7efcbaa2-ef27-433e-9216-a5850ecc2a68" />
