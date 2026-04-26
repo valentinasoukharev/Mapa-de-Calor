@@ -19,7 +19,7 @@ dirmapas <- "C:/Users/Valentina/Desktop/RStudioDocumentos/Bioestadística/depart
 setwd(dirmapas)
 peru_d <- st_read("DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp") #Este comando permite leer el shapefile y 'transformarlo' en un data frame
 ```
-### 🗺️ Observamos el data frame creado y el mapa en blanco
+### Observamos el data frame creado y el mapa en blanco
 ```r
 peru_d
 
@@ -45,3 +45,35 @@ lectores <- PLL %>%
 La data final contiene en la primera columna los nombres de los departamentos y en la segunda los porcentajes calculados para cada uno
 
 ### Impresión del Mapa de Calor
+Unimos los data frames. En caso que el nombre de las columnas que contienen los nombres de los departamentos no coincidan, se puede utilizar 'by' e igualarlos como se muestra.
+
+```r
+peru_datos <- peru_d %>% 
+  left_join(lectores, by = c("NOMBDEP" = "NOMBREDD"))
+```
+Finalmente, hacemos el ggplot: 
+```r
+ggplot(peru_datos) +
+  geom_sf(aes(fill = p_lectores), color = "white", size = 0.2) +
+  labs(
+  title = "Lectura en adultos en Perú",
+  subtitle = "% de personas de 18 a 64 años que leyeron contenido impreso o digital en el último año (2022)",
+  caption = "Fuente: Ministerio de Cultura (MINCUL), 2022\nElaboración propia",
+  x = NULL,
+  y = NULL
+) +
+  scale_fill_continuous(
+    name = "Lectores (%)",
+    low = "#FFF7BC",
+    high = "#D73027",
+    na.value = "gray90",
+    limits = c(5, 50)
+  ) +
+  theme_minimal() +
+  theme(
+  plot.title = element_text(size = 16, face = "bold", hjust = 0),
+  plot.subtitle = element_text(size = 11, hjust = 0),
+  plot.caption = element_text(size = 9, hjust = 0),
+)
+```
+<img width="736" height="833" alt="image" src="https://github.com/user-attachments/assets/08da9da5-b32f-44fb-be2f-dded392e7287" />
