@@ -27,6 +27,7 @@ ggplot(data = peru_d) +
   geom_sf()
 ```
 <img width="448" height="486" alt="image" src="https://github.com/user-attachments/assets/7efcbaa2-ef27-433e-9216-a5850ecc2a68" />
+
 ### Lectura y Limpieza de datos
 ```r
 PL <- read_csv("Datos de Lectura 18-64 años.csv")
@@ -40,6 +41,7 @@ PLL <- PL %>%
 lectores <- PLL %>%
   select(NOMBREDD, p_lectores)
 ```
+
 La data final contiene en la primera columna los nombres de los departamentos y en la segunda los porcentajes calculados para cada uno
 
 ### Impresión del Mapa de Calor
