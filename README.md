@@ -3,6 +3,10 @@
 ## 📌 Objetivo
 Aprender a crear mapas de calor en R usando ggplot2.
 
+## ⬇️ Recursos
+Data obtenida en la [Plataforma Nacional de Datos Abiertos (PNDA)](https://www.gob.pe/datosabiertos)
+Shapefile descargado de [GEO GPS PERÚ](https://www.geogpsperu.com/2014/03/base-de-datos-peru-shapefile-shp-minam.html)
+
 ## 📦 Librerías necesarias (Instalar primero)
 ```r
 library(sf)
@@ -32,11 +36,11 @@ ggplot(data = peru_d) +
 ```r
 PL <- read_csv("Datos de Lectura 18-64 años.csv")
 PLL <- PL %>%
-  group_by(NOMBREDD) %>%
+  group_by(NOMBREDD) %>% #agrupamos por departamento
   summarise(
     total_encuestados = n(),
     lectores = sum(P401_1 == 1, na.rm = TRUE),
-    p_lectores = round((lectores / total_encuestados)*100,2) 
+    p_lectores = round((lectores / total_encuestados)*100,2)  #Calculamos el porcentaje de lectores
   )
 lectores <- PLL %>%
   select(NOMBREDD, p_lectores)
