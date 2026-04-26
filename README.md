@@ -4,7 +4,7 @@
 Aprender a crear mapas de calor en R usando ggplot2.
 
 ## ⬇️ Recursos
-- Data obtenida en la [Plataforma Nacional de Datos Abiertos (PNDA)](https://www.gob.pe/datosabiertos) 
+- Data extraida de la [Plataforma Nacional de Datos Abiertos (PNDA)](https://www.gob.pe/datosabiertos) 
 - Shapefile descargado de [GEO GPS PERÚ](https://www.geogpsperu.com/2014/03/base-de-datos-peru-shapefile-shp-minam.html)
 
 ## 📦 Librerías necesarias (Instalar primero)
