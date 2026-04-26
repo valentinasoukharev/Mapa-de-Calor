@@ -1,0 +1,124 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Mapa de Calor del Perú
+
+```{r}
+install.packages("sf")
+install.packages("purrr")
+install.packages("ggrepel")
+install.packages("readxl")
+```
+
+```{r}
+library(sf)
+library(purrr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(readxl)
+```
+
+```{r}
+dirmapas <- "C:/Users/Valentina/Desktop/RStudioDocumentos/Bioestadística/departamentos" #La dirección de tu directorio de trabajo
+setwd(dirmapas)
+peru_d <- st_read("DEPARTAMENTOS_inei_geogpsperu_suyopomalia.shp") #Este comando permite leer el shapefile y 'transformarlo' en un data frame
+```
+
+```{r}
+peru_d
+```
+
+```{r}
+ggplot(data = peru_d) +
+  geom_sf()
+```
+
+```{r}
+ggplot(data = peru_d %>%
+       filter(NOMBDEP =="LIMA")) +
+  geom_sf()
+```
+
+```{r}
+PL <- read_csv("Datos de Lectura 18-64 años.csv")
+PLL <- PL %>%
+  group_by(NOMBREDD) %>%
+  summarise(
+    total_encuestados = n(),
+    lectores = sum(P401_1 == 1, na.rm = TRUE),
+    p_lectores = round((lectores / total_encuestados)*100,2) 
+  )
+PLL
+```
+
+```{r}
+lectores <- PLL %>%
+  select(NOMBREDD, p_lectores)
+```
+
+```{r}
+peru_datos <- peru_d %>% 
+  left_join(lectores, by = c("NOMBDEP" = "NOMBREDD"))
+```
+
+```{r}
+# PASO 1: Calcular centroides para todo el mapa
+peru_datos <- peru_datos %>%
+  mutate(
+    centroid = st_centroid(st_geometry(.)),
+    lon = st_coordinates(centroid)[,1],
+    lat = st_coordinates(centroid)[,2]
+  )
+
+# PASO 2: Identificar los departamentos extremos (2 más altos y 2 más bajos)
+extremos <- peru_datos %>%
+  filter(!is.na(p_lectores)) %>%
+  arrange(desc(p_lectores)) %>%
+  slice(c(1, 2, n()-1, n())) %>%
+  mutate(
+    etiqueta = paste0(NOMBDEP, ": ", round(p_lectores, 1), "%"),
+    tipo = case_when(
+      row_number() <= 2 ~ "Alto",
+      TRUE ~ "Bajo"
+    )
+  )
+
+
+
+# PASO 3: Crear el gráfico
+ggplot(peru_datos) +
+  geom_sf(aes(fill = p_lectores), color = "white", size = 0.2) +
+ geom_label(
+  data = extremos,
+  aes(x = lon, y = lat, label = etiqueta),
+  size = 2.8,
+  fill = "white",
+  alpha = 0.5,
+  label.size = 0,
+  label.padding = unit(0.1, "lines")
+) +
+  labs(
+  title = "Lectura en adultos en Perú",
+  subtitle = "% de personas de 18 a 64 años que leyeron contenido impreso o digital en el último año (2022)",
+  caption = "Fuente: Ministerio de Cultura (MINCUL), 2022\nElaboración propia",
+  x = NULL,
+  y = NULL
+) +
+  scale_fill_continuous(
+    name = "Lectores (%)",
+    low = "#FFF7BC",
+    high = "#D73027",
+    na.value = "gray90",
+    limits = c(5, 50)
+  ) +
+  theme_minimal() +
+  theme(
+  plot.title = element_text(size = 16, face = "bold", hjust = 0),
+  plot.subtitle = element_text(size = 11, hjust = 0),
+  plot.caption = element_text(size = 9, hjust = 0),
+)
+```
