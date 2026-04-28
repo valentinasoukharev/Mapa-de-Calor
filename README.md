@@ -81,3 +81,8 @@ ggplot(peru_datos) +
 )
 ```
 <img width="736" height="833" alt="image" src="https://github.com/user-attachments/assets/08da9da5-b32f-44fb-be2f-dded392e7287" />
+
+### Extra
+Podemos añadir recuadros donde resaltemos la data exacta relevante, como los porcentajes más bajos y los más altos
+<img width="751" height="835" alt="image" src="https://github.com/user-attachments/assets/a253ef32-885e-45ba-a897-cf7c3c7fc857" />
+
